@@ -62,6 +62,9 @@ def handle_move(start_square, end_square):
 # Main game loop
 running = True
 selected_square = None
+dragging = False
+dragged_piece = None
+dragged_piece_image = None
 
 while running:
     for event in pygame.event.get():
@@ -74,19 +77,33 @@ while running:
             col, row = pos[0] // SQUARE_SIZE, pos[1] // SQUARE_SIZE
             clicked_square = chess.square(col, 7 - row)
             
-            if selected_square is None:
+            if not dragging:
                 if board.piece_at(clicked_square) is not None and board.piece_at(clicked_square).color == board.turn:
                     selected_square = clicked_square
-            else:
-                if handle_move(selected_square, clicked_square):
+                    dragging = True
+                    dragged_piece = board.piece_at(clicked_square)
+                    dragged_piece_image = PIECE_IMAGES[piece_map[dragged_piece.symbol()]]
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if dragging:
+                pos = pygame.mouse.get_pos()
+                col, row = pos[0] // SQUARE_SIZE, pos[1] // SQUARE_SIZE
+                released_square = chess.square(col, 7 - row)
+                if handle_move(selected_square, released_square):
                     selected_square = None
-                else:
-                    selected_square = clicked_square
+                dragging = False
+                dragged_piece = None
+                dragged_piece_image = None
 
     # Draw everything
     screen.fill(WHITE)
     draw_board()
     draw_pieces()
+    
+    if dragging and dragged_piece_image is not None:
+        pos = pygame.mouse.get_pos()
+        screen.blit(dragged_piece_image, (pos[0] - SQUARE_SIZE // 2, pos[1] - SQUARE_SIZE // 2))
+    
     pygame.display.update()
+
 
 
