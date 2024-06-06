@@ -1,6 +1,7 @@
 import pygame
 import chess
 import sys
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -59,6 +60,45 @@ def handle_move(start_square, end_square):
         return True
     return False
 
+# Function to evaluate the board
+def evaluate_board(board):
+    # Simple evaluation function
+    if board.is_checkmate():
+        if board.turn:
+            return -9999
+        else:
+            return 9999
+    elif board.is_stalemate() or board.is_insufficient_material():
+        return 0
+
+    material = sum([
+        len(board.pieces(piece_type, chess.WHITE)) - len(board.pieces(piece_type, chess.BLACK))
+        for piece_type in [chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]
+    ])
+
+    return material
+
+# Function for the AI to select a move
+def select_best_move(board):
+    best_move = None
+    best_value = -9999 if board.turn else 9999
+
+    for move in board.legal_moves:
+        board.push(move)
+        board_value = evaluate_board(board)
+        board.pop()
+
+        if board.turn:
+            if board_value > best_value:
+                best_value = board_value
+                best_move = move
+        else:
+            if board_value < best_value:
+                best_value = board_value
+                best_move = move
+
+    return best_move
+
 # Main game loop
 running = True
 selected_square = None
@@ -73,6 +113,9 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            if not board.turn:  # If it's not the player's turn (i.e., AI's turn), ignore mouse input
+                continue
+
             pos = pygame.mouse.get_pos()
             col, row = pos[0] // SQUARE_SIZE, pos[1] // SQUARE_SIZE
             clicked_square = chess.square(col, 7 - row)
@@ -98,12 +141,18 @@ while running:
     screen.fill(WHITE)
     draw_board()
     draw_pieces()
-    
+
     if dragging and dragged_piece_image is not None:
         pos = pygame.mouse.get_pos()
         screen.blit(dragged_piece_image, (pos[0] - SQUARE_SIZE // 2, pos[1] - SQUARE_SIZE // 2))
-    
+
     pygame.display.update()
+
+    # AI Move
+    if not board.turn:
+        best_move = select_best_move(board)
+        if best_move:
+            board.push(best_move)
 
 
 
