@@ -1,6 +1,5 @@
 import pygame
 import chess
-import chess.engine
 import sys
 
 # Initialize Pygame
@@ -83,3 +82,4 @@ while running:
     draw_board()
     draw_pieces()
     pygame.display.update()
+
