@@ -23,7 +23,7 @@ pygame.display.set_caption("Chess")
 
 # Load images of pieces
 PIECE_IMAGES = {}
-pieces = ['r', 'n', 'b', 'q', 'k', 'p', 'R', 'N', 'B', 'Q', 'K', 'P']
+pieces = ['r-b', 'n-b', 'b-b', 'q-b', 'k-b', 'p-b', 'R', 'N', 'B', 'Q', 'K', 'P']
 for piece in pieces:
     PIECE_IMAGES[piece] = pygame.image.load(f'images/{piece}.png')
 
