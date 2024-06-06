@@ -26,6 +26,12 @@ pieces = ['r-b', 'n-b', 'b-b', 'q-b', 'k-b', 'p-b', 'R', 'N', 'B', 'Q', 'K', 'P'
 for piece in pieces:
     PIECE_IMAGES[piece] = pygame.image.load(f'images/{piece}.png')
 
+# Map pieces to their image names
+piece_map = {
+    'r': 'r-b', 'n': 'n-b', 'b': 'b-b', 'q': 'q-b', 'k': 'k-b', 'p': 'p-b',
+    'R': 'R', 'N': 'N', 'B': 'B', 'Q': 'Q', 'K': 'K', 'P': 'P'
+}
+
 # Set up the board
 board = chess.Board()
 
@@ -43,7 +49,7 @@ def draw_pieces():
             piece = board.piece_at(chess.square(col, 7 - row))
             if piece is not None:
                 piece_symbol = piece.symbol()
-                screen.blit(PIECE_IMAGES[piece_symbol], (col * SQUARE_SIZE, row * SQUARE_SIZE))
+                screen.blit(PIECE_IMAGES[piece_map[piece_symbol]], (col * SQUARE_SIZE, row * SQUARE_SIZE))
 
 # Function to handle a move
 def handle_move(start_square, end_square):
@@ -82,4 +88,5 @@ while running:
     draw_board()
     draw_pieces()
     pygame.display.update()
+
 
