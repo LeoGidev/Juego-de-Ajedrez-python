@@ -5,3 +5,4 @@
 
 <p>Código de práctica de un juego de ajedrez al estilo "un contra la maquina"</p>
 <p>El juego tiene en cuenta las reglas básicas del ajedrez y puedes jugar una partida contra el ordenador</p>
+<img src="images/example.png" alt="Tablero de Ajedrez">
